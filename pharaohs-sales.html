@@ -1,0 +1,2670 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHARAOHS - نظام حجز الوحدات الذكي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* === PHARAOHS BRAND STYLES === */
+        :root {
+            --primary: #B8860B;
+            --primary-dark: #996515;
+            --primary-light: #D4AF37;
+            --dark: #1A1A1A;
+            --darker: #000000;
+            --light: #F8F8F8;
+            --white: #FFFFFF;
+            --gray: #666666;
+            --gray-light: #E5E5E5;
+            --success: #27AE60;
+            --warning: #F2C94C;
+            --danger: #EB5757;
+            --info: #2F80ED;
+            --legal: #9B51E0;
+            --finance: #56CCF2;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* === NEW: CLIENT REGISTRATION === */
+        .registration-section {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+            border: 2px solid var(--primary);
+            display: none;
+        }
+
+        .registration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .registration-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .registration-info {
+            background: rgba(184, 134, 11, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        /* === ENHANCED HEADER === */
+        header {
+            background: var(--darker);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            color: var(--white);
+        }
+
+        .logo-en {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            letter-spacing: 2px;
+        }
+
+        .logo-ar {
+            font-size: 1.1rem;
+            color: var(--white);
+            margin-top: -5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            background: var(--primary);
+            color: var(--darker);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            color: var(--white);
+        }
+
+        .user-details {
+            text-align: left;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .role-badge {
+            background: var(--primary);
+            color: var(--darker);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: var(--primary);
+            color: var(--darker);
+        }
+
+        /* === NEW: DIGITAL DISPLAY === */
+        .digital-display {
+            background: var(--darker);
+            color: var(--white);
+            padding: 3rem 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            text-align: center;
+            border: 3px solid var(--primary);
+            display: none;
+        }
+
+        .display-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .display-stat {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--primary);
+        }
+
+        .display-stat-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .display-stat-label {
+            color: var(--white);
+            font-size: 1.1rem;
+        }
+
+        .display-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .display-unit {
+            background: var(--white);
+            color: var(--dark);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .display-unit.available { background: var(--success); color: white; }
+        .display-unit.sales { background: var(--warning); }
+        .display-unit.finance { background: var(--finance); color: white; }
+        .display-unit.legal { background: var(--legal); color: white; }
+        .display-unit.sold { background: var(--danger); color: white; }
+
+        /* === ENHANCED LOGIN SCREEN === */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
+                        url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3') center/cover;
+        }
+
+        .login-container {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 450px;
+            border: 2px solid var(--primary);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo .logo-en {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+
+        .login-logo .logo-ar {
+            font-size: 1.3rem;
+            color: var(--dark);
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--dark);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .input-with-icon input,
+        .input-with-icon select {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: var(--light);
+        }
+
+        .input-with-icon input:focus,
+        .input-with-icon select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: var(--darker);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            color: var(--white);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        .btn-legal {
+            background: var(--legal);
+            color: var(--white);
+        }
+
+        .btn-finance {
+            background: var(--finance);
+            color: var(--white);
+        }
+
+        .btn-info {
+            background: var(--info);
+            color: var(--white);
+        }
+
+        /* === DASHBOARD STYLES === */
+        .dashboard {
+            display: none;
+            padding: 2rem 0;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .dashboard-header h1 {
+            color: var(--dark);
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        /* === ENHANCED STATS GRID === */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--primary);
+            transition: transform 0.3s;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card.available { border-top-color: var(--success); }
+        .stat-card.sales { border-top-color: var(--warning); }
+        .stat-card.finance { border-top-color: var(--finance); }
+        .stat-card.legal { border-top-color: var(--legal); }
+        .stat-card.sold { border-top-color: var(--danger); }
+        .stat-card.mine { border-top-color: var(--primary); }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .stat-card.available .stat-icon { color: var(--success); }
+        .stat-card.sales .stat-icon { color: var(--warning); }
+        .stat-card.finance .stat-icon { color: var(--finance); }
+        .stat-card.legal .stat-icon { color: var(--legal); }
+        .stat-card.sold .stat-icon { color: var(--danger); }
+        .stat-card.mine .stat-icon { color: var(--primary); }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--dark);
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* === PROJECTS SECTION === */
+        .projects-section {
+            margin: 3rem 0;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .project-image {
+            height: 200px;
+            background: linear-gradient(45deg, var(--primary), var(--primary-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 3rem;
+            position: relative;
+        }
+
+        .project-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--primary);
+            color: var(--darker);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-content h3 {
+            color: var(--dark);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-location {
+            color: var(--gray);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .project-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .project-stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .stat-name {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        /* === UNITS SECTION === */
+        .units-section {
+            display: none;
+            margin: 2rem 0;
+        }
+
+        .units-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 2rem;
+        }
+
+        .back-btn {
+            background: var(--dark);
+            color: var(--white);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--darker);
+        }
+
+        .project-info {
+            flex: 1;
+        }
+
+        .project-info h2 {
+            color: var(--dark);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-info p {
+            color: var(--gray);
+        }
+
+        /* === NEW: UNIT DETAILS MODAL === */
+        .unit-details-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .unit-details-content {
+            background: var(--white);
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            border: 3px solid var(--primary);
+            position: relative;
+        }
+
+        .unit-details-header {
+            background: var(--darker);
+            color: var(--white);
+            padding: 2rem;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .unit-details-body {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .unit-model-view {
+            background: var(--gray-light);
+            border-radius: 10px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--primary);
+        }
+
+        .unit-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(184, 134, 11, 0.1);
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .info-value {
+            color: var(--gray);
+        }
+
+        .payment-plan {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .payment-plan h4 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .plan-stages {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .plan-stage {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        /* === ENHANCED UNITS GRID === */
+        .units-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .unit-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .unit-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            height: 4px;
+        }
+
+        .unit-card.available::before { background: var(--success); }
+        .unit-card.sales::before { background: var(--warning); }
+        .unit-card.finance::before { background: var(--finance); }
+        .unit-card.legal::before { background: var(--legal); }
+        .unit-card.sold::before { background: var(--danger); }
+
+        .unit-card.available { border-color: var(--success); }
+        .unit-card.sales { border-color: var(--warning); }
+        .unit-card.finance { border-color: var(--finance); }
+        .unit-card.legal { border-color: var(--legal); }
+        .unit-card.sold { border-color: var(--danger); cursor: not-allowed; }
+
+        .unit-card.available:hover,
+        .unit-card.sales:hover,
+        .unit-card.finance:hover,
+        .unit-card.legal:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .unit-number {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .unit-price {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .unit-type {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .unit-stage {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .stage-available { background: var(--success); }
+        .stage-sales { background: var(--warning); color: black; }
+        .stage-finance { background: var(--finance); }
+        .stage-legal { background: var(--legal); }
+        .stage-sold { background: var(--danger); }
+
+        .locked-by {
+            font-size: 0.7rem;
+            color: var(--gray);
+            margin-bottom: 0.3rem;
+        }
+
+        .timer {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--danger);
+            background: rgba(235, 87, 87, 0.1);
+            padding: 0.3rem 0.5rem;
+            border-radius: 10px;
+            margin-top: 0.5rem;
+        }
+
+        .view-details-btn {
+            background: var(--primary);
+            color: var(--darker);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .view-details-btn:hover {
+            background: var(--primary-light);
+        }
+
+        .stage-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            position: relative;
+            height: 4px;
+            background: var(--gray-light);
+            border-radius: 2px;
+        }
+
+        .stage-progress::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
+        .stage-progress.sales::before { width: 25%; }
+        .stage-progress.finance::before { width: 50%; }
+        .stage-progress.legal::before { width: 75%; }
+        .stage-progress.sold::before { width: 100%; }
+
+        /* === ENHANCED MANAGER CONTROLS === */
+        .manager-controls {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+            border: 2px solid var(--primary);
+            display: none;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .control-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* === MODALS === */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+            border: 3px solid var(--primary);
+            position: relative;
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--darker);
+            font-size: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .modal-body {
+            margin-bottom: 2rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        /* === NOTIFICATIONS === */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 1.2rem 1.5rem;
+            border-radius: 10px;
+            color: white;
+            z-index: 1001;
+            display: none;
+            box-shadow: var(--shadow-lg);
+            animation: slideInLeft 0.3s;
+            max-width: 400px;
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .notification.success { background: var(--success); }
+        .notification.warning { background: var(--warning); color: black; }
+        .notification.error { background: var(--danger); }
+        .notification.info { background: var(--primary); color: var(--darker); }
+        .notification.legal { background: var(--legal); }
+        .notification.finance { background: var(--finance); }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .notification i {
+            font-size: 1.2rem;
+        }
+
+        /* === RESPONSIVE DESIGN === */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .units-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .units-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .control-actions {
+                flex-direction: column;
+            }
+
+            .unit-details-body {
+                grid-template-columns: 1fr;
+            }
+
+            .display-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .digital-display {
+                padding: 1.5rem 1rem;
+            }
+        }
+
+        /* === STAGE INDICATOR === */
+        .stage-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .stage-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stage-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            border: 3px solid var(--gray-light);
+            background: var(--white);
+        }
+
+        .stage-step.active .stage-circle {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--darker);
+        }
+
+        .stage-step.completed .stage-circle {
+            border-color: var(--success);
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .stage-label {
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--gray);
+        }
+
+        .stage-step.active .stage-label {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .stage-step.completed .stage-label {
+            color: var(--success);
+        }
+
+        .stage-indicator::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            left: 20px;
+            height: 3px;
+            background: var(--gray-light);
+            z-index: 1;
+        }
+
+        .stage-indicator .completed::before {
+            background: var(--success);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-logo">
+                <div class="logo-en">PHARAOHS</div>
+                <div class="logo-ar">الفراعنة للاستثمار و التطوير العقاري</div>
+            </div>
+            
+            <div class="login-title">نظام حجز الوحدات الذكي</div>
+            
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> اسم المستخدم</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" placeholder="أدخل اسم المستخدم">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="أدخل كلمة المرور">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="userRole"><i class="fas fa-user-tag"></i> الدور</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user-tag"></i>
+                        <select id="userRole">
+                            <option value="">اختر دورك</option>
+                            <option value="client">عميل (تسجيل جديد)</option>
+                            <option value="sales1">مندوب مبيعات ١</option>
+                            <option value="sales2">مندوب مبيعات ٢</option>
+                            <option value="sales3">مندوب مبيعات ٣</option>
+                            <option value="manager">مدير المبيعات</option>
+                            <option value="ceo">المدير التنفيذي</option>
+                            <option value="legal">القسم القانوني</option>
+                            <option value="finance">القسم المالي</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button id="loginBtn" class="btn btn-block">
+                    <i class="fas fa-sign-in-alt"></i> دخول إلى النظام
+                </button>
+                
+                <div style="margin-top: 1.5rem; text-align: center; color: var(--gray); font-size: 0.9rem;">
+                    <p>بيانات تجريبية: أي اسم مستخدم/كلمة مرور مع الدور المختار</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" style="display: none;">
+        <!-- Header -->
+        <header>
+            <div class="container">
+                <div class="navbar">
+                    <div class="logo-section">
+                        <div class="logo">
+                            <div class="logo-en">PHARAOHS</div>
+                            <div class="logo-ar">الفراعنة للاستثمار و التطوير العقاري</div>
+                        </div>
+                    </div>
+                    
+                    <div class="nav-links">
+                        <a href="#" id="digitalDisplayLink" class="nav-link">
+                            <i class="fas fa-tv"></i> الشاشة الرقمية
+                        </a>
+                        <a href="#" id="clientRegistrationLink" class="nav-link">
+                            <i class="fas fa-user-plus"></i> تسجيل عميل جديد
+                        </a>
+                    </div>
+                    
+                    <div class="user-info">
+                        <div class="user-details">
+                            <div class="user-name" id="currentUserName">ضيف</div>
+                            <div class="role-badge" id="currentUserRole">ضيف</div>
+                        </div>
+                        <button class="logout-btn" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> تسجيل خروج
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Digital Display -->
+        <div id="digitalDisplay" class="digital-display">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h1 style="color: var(--primary); font-size: 2.5rem;">الشاشة الرقمية - مشروع حكاية</h1>
+                    <p style="color: var(--white); font-size: 1.2rem;">أسوان الجديدة - الحي الثالث</p>
+                </div>
+                
+                <div class="display-stats">
+                    <div class="display-stat">
+                        <div class="display-stat-value" id="totalUnits">٠</div>
+                        <div class="display-stat-label">إجمالي الوحدات</div>
+                    </div>
+                    <div class="display-stat">
+                        <div class="display-stat-value" id="soldUnitsDisplay">٠</div>
+                        <div class="display-stat-label">الوحدات المباعة</div>
+                    </div>
+                    <div class="display-stat">
+                        <div class="display-stat-value" id="availableUnitsDisplay">٠</div>
+                        <div class="display-stat-label">الوحدات المتاحة</div>
+                    </div>
+                    <div class="display-stat">
+                        <div class="display-stat-value" id="totalRevenue">٠</div>
+                        <div class="display-stat-label">إجمالي المبيعات (جنيه)</div>
+                    </div>
+                </div>
+                
+                <div class="display-grid" id="displayGrid">
+                    <!-- Display units will be dynamically generated here -->
+                </div>
+                
+                <div style="margin-top: 2rem; text-align: center;">
+                    <button id="backToDashboard" class="btn">
+                        <i class="fas fa-arrow-right"></i> العودة للوحة التحكم
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Client Registration -->
+        <div id="clientRegistration" class="registration-section">
+            <div class="container">
+                <div class="section-title">
+                    <i class="fas fa-user-plus"></i> تسجيل عميل جديد
+                </div>
+                
+                <div class="registration-grid">
+                    <div class="registration-form">
+                        <div class="form-group">
+                            <label for="clientName">اسم العميل بالكامل</label>
+                            <input type="text" id="clientName" class="input-with-icon" placeholder="أدخل اسم العميل">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="clientPhone">رقم الهاتف</label>
+                            <input type="tel" id="clientPhone" class="input-with-icon" placeholder="أدخل رقم الهاتف">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="clientEmail">البريد الإلكتروني</label>
+                            <input type="email" id="clientEmail" class="input-with-icon" placeholder="أدخل البريد الإلكتروني">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="clientSource">كيف عرف عن المشروع؟</label>
+                            <select id="clientSource" class="input-with-icon">
+                                <option value="">اختر مصدر المعرفة</option>
+                                <option value="social">وسائل التواصل الاجتماعي</option>
+                                <option value="friend">صديق/قريب</option>
+                                <option value="event">معرض/فعالية</option>
+                                <option value="advertisement">إعلان</option>
+                                <option value="other">آخر</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="assignedSales">تخصيص لمندوب مبيعات</label>
+                            <select id="assignedSales" class="input-with-icon">
+                                <option value="">تعيين تلقائي</option>
+                                <option value="sales1">مندوب مبيعات ١</option>
+                                <option value="sales2">مندوب مبيعات ٢</option>
+                                <option value="sales3">مندوب مبيعات ٣</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-actions">
+                            <button id="registerClientBtn" class="btn btn-success">
+                                <i class="fas fa-check"></i> تسجيل العميل
+                            </button>
+                            <button id="cancelRegistrationBtn" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> إلغاء
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="registration-info">
+                        <h4>معلومات التسجيل:</h4>
+                        <p>يتم تسجيل العملاء الجدد في النظام لضمان:</p>
+                        <ul style="margin-top: 1rem; padding-right: 1.5rem;">
+                            <li>تتبع مسار العميل من التسجيل حتى الشراء</li>
+                            <li>تخصيص مندوب مبيعات مناسب للعميل</li>
+                            <li>تحليل مصادر العملاء لتحسين التسويق</li>
+                            <li>إرسال إشعارات للمدير عن العملاء الجدد</li>
+                        </ul>
+                        <div style="margin-top: 2rem; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                            <p style="color: var(--primary); font-weight: bold;">
+                                <i class="fas fa-info-circle"></i> يتم إرسال إشعار للمدير والمدير التنفيذي بكل عميل جديد
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="container">
+            <div id="dashboard" class="dashboard">
+                <div class="dashboard-header">
+                    <h1>لوحة تحكم حجز الوحدات الذكية</h1>
+                    <p>نظام متكامل لإدارة عملية البيع من التسجيل حتى الإغلاق النهائي</p>
+                </div>
+
+                <!-- Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card available">
+                        <div class="stat-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="stat-number" id="availableUnits">٠</div>
+                        <div class="stat-label">وحدات متاحة</div>
+                    </div>
+                    
+                    <div class="stat-card sales">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="stat-number" id="salesUnits">٠</div>
+                        <div class="stat-label">في مرحلة المبيعات</div>
+                    </div>
+                    
+                    <div class="stat-card finance">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="stat-number" id="financeUnits">٠</div>
+                        <div class="stat-label">في القسم المالي</div>
+                    </div>
+                    
+                    <div class="stat-card legal">
+                        <div class="stat-icon">
+                            <i class="fas fa-gavel"></i>
+                        </div>
+                        <div class="stat-number" id="legalUnits">٠</div>
+                        <div class="stat-label">في القسم القانوني</div>
+                    </div>
+                    
+                    <div class="stat-card sold">
+                        <div class="stat-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div class="stat-number" id="soldUnits">٠</div>
+                        <div class="stat-label">وحدات مباعة</div>
+                    </div>
+                    
+                    <div class="stat-card mine">
+                        <div class="stat-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="stat-number" id="myLocks">٠</div>
+                        <div class="stat-label">حجوزاتي النشطة</div>
+                    </div>
+                </div>
+
+                <!-- Projects Section -->
+                <div id="projectsSection" class="projects-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-building"></i> مشاريعنا
+                    </h2>
+                    
+                    <div class="projects-grid">
+                        <div class="project-card" data-project="hekaya">
+                            <div class="project-image">
+                                <i class="fas fa-building"></i>
+                                <div class="project-badge">جديد</div>
+                            </div>
+                            <div class="project-content">
+                                <h3>مشروع حكاية</h3>
+                                <p class="project-location">
+                                    <i class="fas fa-map-marker-alt"></i> الحي الثالث, أسوان الجديدة
+                                </p>
+                                <p>مجمع سكني فاخر بتصميمات معمارية مبتكرة ومرافق متكاملة.</p>
+                                <div class="project-stats">
+                                    <div class="project-stat">
+                                        <div class="stat-value">٢٤</div>
+                                        <div class="stat-name">إجمالي الوحدات</div>
+                                    </div>
+                                    <div class="project-stat">
+                                        <div class="stat-value" style="color: var(--success);">١٨</div>
+                                        <div class="stat-name">متاحة</div>
+                                    </div>
+                                    <div class="project-stat">
+                                        <div class="stat-value" style="color: var(--danger);">٦</div>
+                                        <div class="stat-name">مباعة</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="project-card" data-project="mazar">
+                            <div class="project-image">
+                                <i class="fas fa-shopping-cart"></i>
+                                <div class="project-badge">قريباً</div>
+                            </div>
+                            <div class="project-content">
+                                <h3>مول مزار</h3>
+                                <p class="project-location">
+                                    <i class="fas fa-map-marker-alt"></i> أسوان الجديدة
+                                </p>
+                                <p>وجهة تسوق وتجارة فاخرة في قلب المنطقة التجارية.</p>
+                                <div class="project-stats">
+                                    <div class="project-stat">
+                                        <div class="stat-value">١٨</div>
+                                        <div class="stat-name">إجمالي الوحدات</div>
+                                    </div>
+                                    <div class="project-stat">
+                                        <div class="stat-value" style="color: var(--success);">١٥</div>
+                                        <div class="stat-name">متاحة</div>
+                                    </div>
+                                    <div class="project-stat">
+                                        <div class="stat-value" style="color: var(--danger);">٣</div>
+                                        <div class="stat-name">مباعة</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Units Section -->
+                <div id="unitsSection" class="units-section">
+                    <div class="units-header">
+                        <button id="backToProjects" class="back-btn">
+                            <i class="fas fa-arrow-right"></i> العودة للمشاريع
+                        </button>
+                        <div class="project-info">
+                            <h2 id="projectTitle">وحدات المشروع</h2>
+                            <p id="projectDescription">اختر وحدة لبدء عملية البيع متعددة المراحل</p>
+                        </div>
+                    </div>
+
+                    <!-- Stage Indicator -->
+                    <div class="stage-indicator" id="stageIndicator" style="display: none;">
+                        <div class="stage-step completed" id="stepSales">
+                            <div class="stage-circle">١</div>
+                            <div class="stage-label">مرحلة المبيعات</div>
+                        </div>
+                        <div class="stage-step" id="stepFinance">
+                            <div class="stage-circle">٢</div>
+                            <div class="stage-label">القسم المالي</div>
+                        </div>
+                        <div class="stage-step" id="stepLegal">
+                            <div class="stage-circle">٣</div>
+                            <div class="stage-label">القسم القانوني</div>
+                        </div>
+                        <div class="stage-step" id="stepSold">
+                            <div class="stage-circle">٤</div>
+                            <div class="stage-label">مكتمل - مباعة</div>
+                        </div>
+                    </div>
+
+                    <!-- Manager Controls -->
+                    <div id="managerControls" class="manager-controls">
+                        <h2 class="section-title">
+                            <i class="fas fa-cogs"></i> أدوات الإدارة
+                        </h2>
+                        
+                        <div class="controls-grid">
+                            <div class="control-group">
+                                <label>فتح قفل الوحدة قسرياً</label>
+                                <select id="forceUnlockSelect">
+                                    <option value="">اختر وحدة مقفولة لفتحها...</option>
+                                </select>
+                                <div class="control-actions">
+                                    <button id="forceUnlockBtn" class="btn btn-danger">
+                                        <i class="fas fa-unlock"></i> فتح القفل
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label>تراجع عن بيع الوحدة</label>
+                                <select id="revertSoldSelect">
+                                    <option value="">اختر وحدة مباعة للتراجع...</option>
+                                </select>
+                                <div class="control-actions">
+                                    <button id="revertSoldBtn" class="btn btn-warning">
+                                        <i class="fas fa-undo"></i> تراجع عن البيع
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label>تغيير مرحلة الوحدة</label>
+                                <select id="changeStageSelect">
+                                    <option value="">اختر وحدة لتغيير مرحلتها...</option>
+                                </select>
+                                <select id="newStageSelect">
+                                    <option value="available">متاحة</option>
+                                    <option value="sales">مرحلة المبيعات</option>
+                                    <option value="finance">القسم المالي</option>
+                                    <option value="legal">القسم القانوني</option>
+                                    <option value="sold">مباعة</option>
+                                </select>
+                                <div class="control-actions">
+                                    <button id="changeStageBtn" class="btn btn-info">
+                                        <i class="fas fa-exchange-alt"></i> تغيير المرحلة
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Units Grid -->
+                    <div id="unitsGrid" class="units-grid">
+                        <!-- Units will be dynamically generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unit Details Modal -->
+    <div id="unitDetailsModal" class="unit-details-modal">
+        <div class="unit-details-content">
+            <div class="unit-details-header">
+                <div>
+                    <h2 id="unitDetailsTitle">تفاصيل الوحدة</h2>
+                    <p id="unitDetailsLocation">الحي الثالث, أسوان الجديدة</p>
+                </div>
+                <button id="closeUnitDetails" class="btn" style="background: var(--white); color: var(--dark);">
+                    <i class="fas fa-times"></i> إغلاق
+                </button>
+            </div>
+            
+            <div class="unit-details-body">
+                <div class="unit-model-view">
+                    <i class="fas fa-building"></i>
+                    <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 0.5rem; border-radius: 5px;">
+                        عرض 3D للمشروع
+                    </div>
+                </div>
+                
+                <div class="unit-info">
+                    <div class="info-row">
+                        <span class="info-label">رقم الوحدة:</span>
+                        <span class="info-value" id="detailUnitNumber">A1</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">نوع الوحدة:</span>
+                        <span class="info-value" id="detailUnitType">شقة</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">المساحة:</span>
+                        <span class="info-value" id="detailUnitArea">١٥٠ متر²</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">السعر الإجمالي:</span>
+                        <span class="info-value" id="detailUnitPrice" style="color: var(--primary); font-weight: bold;">٣,٥٠٠,٠٠٠ ج.م</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">السعر للمتر:</span>
+                        <span class="info-value" id="detailPricePerMeter">٢٣,٣٣٣ ج.م/متر²</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">الحالة:</span>
+                        <span class="info-value" id="detailUnitStatus">متاحة</span>
+                    </div>
+                    
+                    <div class="payment-plan">
+                        <h4><i class="fas fa-calendar-alt"></i> خطة السداد</h4>
+                        <div class="plan-stages">
+                            <div class="plan-stage">
+                                <span>الدفعة الأولى (حجز الوحدة)</span>
+                                <span>١٠٪ = ٣٥٠,٠٠٠ ج.م</span>
+                            </div>
+                            <div class="plan-stage">
+                                <span>بعد ٣ أشهر</span>
+                                <span>١٥٪ = ٥٢٥,٠٠٠ ج.م</span>
+                            </div>
+                            <div class="plan-stage">
+                                <span>بعد ٦ أشهر</span>
+                                <span>٢٠٪ = ٧٠٠,٠٠٠ ج.م</span>
+                            </div>
+                            <div class="plan-stage">
+                                <span>بعد ٩ أشهر</span>
+                                <span>٢٠٪ = ٧٠٠,٠٠٠ ج.م</span>
+                            </div>
+                            <div class="plan-stage">
+                                <span>بعد ١٢ شهر (تسليم)</span>
+                                <span>٣٥٪ = ١,٢٢٥,٠٠٠ ج.م</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(184, 134, 11, 0.1); border-radius: 8px;">
+                        <p style="color: var(--primary-dark); font-size: 0.9rem;">
+                            <i class="fas fa-info-circle"></i> السعر يشمل تشطيب سوبر لوكس + تركيب تكييفات + مطبخ + حمامات
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Lock Modal -->
+    <div id="lockModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="modal-title">حجز الوحدة <span id="modalUnitNumber"></span></div>
+            </div>
+            
+            <div class="modal-body">
+                <p>أنت على وشك حجز هذه الوحدة لمدة <strong>١٥ دقيقة</strong>. يرجى تقديم بيانات العميل:</p>
+                
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label for="customerName">اسم العميل</label>
+                    <input type="text" id="customerName" class="input-with-icon" placeholder="أدخل اسم العميل بالكامل" style="padding-left: 1rem;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="customerPhone">هاتف العميل</label>
+                    <input type="tel" id="customerPhone" class="input-with-icon" placeholder="أدخل رقم هاتف العميل" style="padding-left: 1rem;">
+                </div>
+                
+                <div style="background: rgba(184, 134, 11, 0.1); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                    <p style="font-size: 0.9rem; color: var(--primary-dark); margin: 0;">
+                        <i class="fas fa-info-circle"></i> بعد التأكد من اهتمام العميل، سيتم تحويل الوحدة إلى القسم المالي.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button id="confirmLockBtn" class="btn">
+                    <i class="fas fa-lock"></i> بدء عملية البيع
+                </button>
+                <button id="cancelLockBtn" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Extension Modal -->
+    <div id="salesExtensionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon" style="background: var(--warning);">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="modal-title">التحقق من اهتمام العميل</div>
+            </div>
+            
+            <div class="modal-body">
+                <p>هل العميل لا يزال مهتماً بالوحدة <strong id="salesExtensionUnitNumber"></strong>؟</p>
+                <p style="margin-top: 1rem;">الوقت المتبقي: <strong id="salesTimeRemaining" style="color: var(--danger);">٠</strong> دقيقة</p>
+                
+                <div style="background: rgba(242, 201, 76, 0.1); padding: 1rem; border-radius: 8px; margin-top: 1.5rem;">
+                    <p style="font-size: 0.9rem; color: #856404; margin: 0;">
+                        <i class="fas fa-exclamation-triangle"></i> إذا كان العميل مهتماً، سيتم تحويل الوحدة إلى القسم المالي.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button id="moveToFinanceBtn" class="btn btn-finance">
+                    <i class="fas fa-file-invoice-dollar"></i> نعم، تحويل للقسم المالي
+                </button>
+                <button id="extendSalesBtn" class="btn">
+                    <i class="fas fa-plus"></i> تمديد ٥ دقائق
+                </button>
+                <button id="releaseSalesUnitBtn" class="btn btn-secondary">
+                    <i class="fas fa-unlock"></i> تحرير الوحدة
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Finance Department Modal -->
+    <div id="financeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon" style="background: var(--finance);">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </div>
+                <div class="modal-title">القسم المالي - الوحدة <span id="financeUnitNumber"></span></div>
+            </div>
+            
+            <div class="modal-body">
+                <p>الوحدة حالياً في القسم المالي. الوقت المتبقي: <strong id="financeTimeRemaining" style="color: var(--finance);">٠</strong> دقيقة</p>
+                <p style="margin-top: 1rem;">بيانات العميل: <strong id="financeCustomerName"></strong> - <strong id="financeCustomerPhone"></strong></p>
+                
+                <div style="background: rgba(86, 204, 242, 0.1); padding: 1rem; border-radius: 8px; margin-top: 1.5rem;">
+                    <p style="font-size: 0.9rem; color: var(--finance); margin: 0;">
+                        <i class="fas fa-info-circle"></i> بعد انتهاء الإجراءات المالية، سيتم تحويل الوحدة إلى القسم القانوني.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button id="moveToLegalBtn" class="btn btn-legal">
+                    <i class="fas fa-gavel"></i> تحويل للقسم القانوني
+                </button>
+                <button id="extendFinanceBtn" class="btn btn-finance">
+                    <i class="fas fa-plus"></i> تمديد ١٠ دقائق
+                </button>
+                <button id="rejectFinanceBtn" class="btn btn-danger">
+                    <i class="fas fa-times"></i> رفض وتراجع
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legal Department Modal -->
+    <div id="legalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon" style="background: var(--legal);">
+                    <i class="fas fa-gavel"></i>
+                </div>
+                <div class="modal-title">القسم القانوني - الوحدة <span id="legalUnitNumber"></span></div>
+            </div>
+            
+            <div class="modal-body">
+                <p>الوحدة حالياً في القسم القانوني. الوقت المتبقي: <strong id="legalTimeRemaining" style="color: var(--legal);">٠</strong> دقيقة</p>
+                <p style="margin-top: 1rem;">بيانات العميل: <strong id="legalCustomerName"></strong> - <strong id="legalCustomerPhone"></strong></p>
+                
+                <div style="background: rgba(155, 81, 224, 0.1); padding: 1rem; border-radius: 8px; margin-top: 1.5rem;">
+                    <p style="font-size: 0.9rem; color: var(--legal); margin: 0;">
+                        <i class="fas fa-info-circle"></i> بعد انتهاء الإجراءات القانونية، سيتم إتمام عملية البيع.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button id="markAsSoldBtn" class="btn btn-success">
+                    <i class="fas fa-tag"></i> إتمام البيع
+                </button>
+                <button id="extendLegalBtn" class="btn btn-legal">
+                    <i class="fas fa-plus"></i> تمديد ١٠ دقائق
+                </button>
+                <button id="rejectLegalBtn" class="btn btn-danger">
+                    <i class="fas fa-times"></i> رفض وتراجع
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification System -->
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <i class="fas fa-bell"></i>
+            <span id="notificationMessage">رسالة الإشعار</span>
+        </div>
+    </div>
+
+    <script>
+        // === ENHANCED DATA MODELS ===
+        const projects = {
+            hekaya: {
+                name: "مشروع حكاية",
+                description: "مجمع سكني فاخر بتصميمات معمارية مبتكرة ومرافق متكاملة",
+                location: "الحي الثالث, أسوان الجديدة",
+                units: Array.from({length: 24}, (_, i) => {
+                    const area = [120, 150, 180][i % 3];
+                    const price = area * 23333;
+                    return {
+                        id: `hekaya-${i+1}`,
+                        number: `A${i+1}`,
+                        type: ['شقة', 'دوبلكس', 'بنتهاوس'][i % 3],
+                        area: `${area} متر²`,
+                        price: price,
+                        pricePerMeter: 23333,
+                        status: 'available',
+                        stage: 'available', // available, sales, finance, legal, sold
+                        lockedBy: null,
+                        lockedAt: null,
+                        lockedUntil: null,
+                        customerName: null,
+                        customerPhone: null,
+                        lockCount: 0,
+                        salesRepLocks: {},
+                        currentDepartment: null // sales, finance, legal
+                    }
+                })
+            },
+            mazar: {
+                name: "مول مزار", 
+                description: "وجهة تسوق وتجارة فاخرة في قلب المنطقة التجارية",
+                location: "أسوان الجديدة",
+                units: Array.from({length: 18}, (_, i) => {
+                    const area = [80, 100, 120][i % 3];
+                    const price = area * 30000;
+                    return {
+                        id: `mazar-${i+1}`,
+                        number: `B${i+1}`,
+                        type: ['محل', 'مكتب', 'معرض'][i % 3],
+                        area: `${area} متر²`,
+                        price: price,
+                        pricePerMeter: 30000,
+                        status: 'available',
+                        stage: 'available',
+                        lockedBy: null,
+                        lockedAt: null,
+                        lockedUntil: null,
+                        customerName: null,
+                        customerPhone: null,
+                        lockCount: 0,
+                        salesRepLocks: {},
+                        currentDepartment: null
+                    }
+                })
+            }
+        };
+
+        // Initialize some units as sold for demo
+        projects.hekaya.units[0].stage = 'sold';
+        projects.hekaya.units[1].stage = 'sold';
+        projects.hekaya.units[5].stage = 'sold';
+        projects.mazar.units[0].stage = 'sold';
+        projects.mazar.units[3].stage = 'sold';
+
+        // Registered clients
+        let registeredClients = [];
+
+        let currentUser = null;
+        let currentProject = null;
+        let timers = {};
+
+        // === UTILITY FUNCTIONS ===
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('ar-EG').format(amount) + ' ج.م';
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const messageElement = document.getElementById('notificationMessage');
+            
+            messageElement.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 4000);
+        }
+
+        function updateStatistics() {
+            if (!currentProject) return;
+            
+            const units = projects[currentProject].units;
+            const available = units.filter(u => u.stage === 'available').length;
+            const sales = units.filter(u => u.stage === 'sales').length;
+            const finance = units.filter(u => u.stage === 'finance').length;
+            const legal = units.filter(u => u.stage === 'legal').length;
+            const sold = units.filter(u => u.stage === 'sold').length;
+            const myLocks = currentUser ? units.filter(u => u.lockedBy === currentUser.id && u.stage !== 'sold').length : 0;
+
+            document.getElementById('availableUnits').textContent = available;
+            document.getElementById('salesUnits').textContent = sales;
+            document.getElementById('financeUnits').textContent = finance;
+            document.getElementById('legalUnits').textContent = legal;
+            document.getElementById('soldUnits').textContent = sold;
+            document.getElementById('myLocks').textContent = myLocks;
+
+            // Update digital display stats
+            updateDigitalDisplay();
+        }
+
+        function updateDigitalDisplay() {
+            if (!currentProject) return;
+            
+            const units = projects[currentProject].units;
+            const totalUnits = units.length;
+            const soldUnits = units.filter(u => u.stage === 'sold').length;
+            const availableUnits = units.filter(u => u.stage === 'available').length;
+            const totalRevenue = units.filter(u => u.stage === 'sold').reduce((sum, unit) => sum + unit.price, 0);
+
+            document.getElementById('totalUnits').textContent = totalUnits;
+            document.getElementById('soldUnitsDisplay').textContent = soldUnits;
+            document.getElementById('availableUnitsDisplay').textContent = availableUnits;
+            document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+
+            // Update display grid
+            const displayGrid = document.getElementById('displayGrid');
+            displayGrid.innerHTML = '';
+            
+            units.forEach(unit => {
+                const displayUnit = document.createElement('div');
+                displayUnit.className = `display-unit ${unit.stage}`;
+                displayUnit.textContent = unit.number;
+                displayUnit.title = `${unit.number} - ${unit.type} - ${formatCurrency(unit.price)}`;
+                displayGrid.appendChild(displayUnit);
+            });
+        }
+
+        // === ENHANCED UNIT MANAGEMENT ===
+        function renderUnits() {
+            if (!currentProject) return;
+            
+            const unitsGrid = document.getElementById('unitsGrid');
+            const units = projects[currentProject].units;
+            
+            unitsGrid.innerHTML = '';
+            
+            units.forEach(unit => {
+                const unitCard = document.createElement('div');
+                unitCard.className = `unit-card ${unit.stage}`;
+                
+                let lockedInfo = '';
+                let timerInfo = '';
+                let progressBar = '';
+                
+                if (unit.stage !== 'available' && unit.stage !== 'sold') {
+                    lockedInfo = `<div class="locked-by">بواسطة: ${unit.lockedBy}</div>`;
+                    timerInfo = `<div class="timer" id="timer-${unit.id}">جاري الحساب...</div>`;
+                }
+                
+                if (unit.stage !== 'available') {
+                    progressBar = `<div class="stage-progress ${unit.stage}"></div>`;
+                }
+                
+                const stageLabels = {
+                    'available': 'متاحة',
+                    'sales': 'مرحلة المبيعات',
+                    'finance': 'القسم المالي', 
+                    'legal': 'القسم القانوني',
+                    'sold': 'مباعة'
+                };
+                
+                unitCard.innerHTML = `
+                    <div class="unit-number">${unit.number}</div>
+                    <div class="unit-price">${formatCurrency(unit.price)}</div>
+                    <div class="unit-type">${unit.type} - ${unit.area}</div>
+                    <div class="unit-stage stage-${unit.stage}">${stageLabels[unit.stage]}</div>
+                    ${lockedInfo}
+                    ${timerInfo}
+                    <button class="view-details-btn" data-unit-id="${unit.id}">
+                        <i class="fas fa-eye"></i> عرض التفاصيل
+                    </button>
+                    ${progressBar}
+                `;
+                
+                unitsGrid.appendChild(unitCard);
+                
+                // Start timer if unit is in a locked stage
+                if (['sales', 'finance', 'legal'].includes(unit.stage) && unit.lockedUntil) {
+                    startTimer(unit);
+                }
+            });
+            
+            // Add event listeners to view details buttons
+            document.querySelectorAll('.view-details-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const unitId = btn.dataset.unitId;
+                    const unit = projects[currentProject].units.find(u => u.id === unitId);
+                    if (unit) {
+                        openUnitDetails(unit);
+                    }
+                });
+            });
+            
+            // Add click handler to unit cards
+            document.querySelectorAll('.unit-card').forEach((card, index) => {
+                card.addEventListener('click', () => {
+                    const unit = projects[currentProject].units[index];
+                    handleUnitClick(unit);
+                });
+            });
+            
+            updateManagerControls();
+            updateStatistics();
+        }
+
+        function handleUnitClick(unit) {
+            if (unit.stage === 'sold') {
+                if (['manager', 'ceo'].includes(currentUser.role)) {
+                    showNotification(`الوحدة ${unit.number} مباعة. يمكنك استخدام أدوات الإدارة للتراجع عن البيع.`, 'info');
+                } else {
+                    showNotification('هذه الوحدة مباعة بالفعل', 'error');
+                }
+                return;
+            }
+            
+            // Sales representative actions
+            if (currentUser.role === 'sales') {
+                if (unit.stage === 'available') {
+                    // Check if user already has a lock
+                    const userLocks = projects[currentProject].units.filter(u => 
+                        u.lockedBy === currentUser.id && u.stage !== 'sold'
+                    ).length;
+                    
+                    if (userLocks >= 1) {
+                        showNotification('يمكنك حجز وحدة واحدة فقط في نفس الوقت', 'error');
+                        return;
+                    }
+                    
+                    // Check if user has locked this unit 3 times before
+                    const lockCount = unit.salesRepLocks[currentUser.id] || 0;
+                    if (lockCount >= 3) {
+                        showNotification('مطلوب موافقة المدير لحجز هذه الوحدة (تم حجزها ٣ مرات أو أكثر)', 'warning');
+                        return;
+                    }
+                    
+                    openLockModal(unit);
+                } else if (unit.stage === 'sales' && unit.lockedBy === currentUser.id) {
+                    openSalesExtensionModal(unit);
+                } else if (unit.stage === 'sales') {
+                    showNotification(`هذه الوحدة في مرحلة المبيعات بواسطة ${unit.lockedBy}`, 'info');
+                } else {
+                    showNotification(`الوحدة حالياً في ${unit.stage === 'finance' ? 'القسم المالي' : 'القسم القانوني'}`, 'info');
+                }
+            } 
+            // Finance department actions  
+            else if (currentUser.role === 'finance' && unit.stage === 'finance') {
+                openFinanceModal(unit);
+            }
+            // Legal department actions
+            else if (currentUser.role === 'legal' && unit.stage === 'legal') {
+                openLegalModal(unit);
+            }
+            // Manager/CEO actions
+            else if (['manager', 'ceo'].includes(currentUser.role)) {
+                let message = `الوحدة ${unit.number}: ${unit.stage}`;
+                if (unit.lockedBy) message += ` بواسطة ${unit.lockedBy}`;
+                if (unit.customerName) message += ` للعميل ${unit.customerName}`;
+                
+                showNotification(message, 'info');
+            } else if (currentUser.role === 'client') {
+                openUnitDetails(unit);
+            } else {
+                showNotification(`لا يمكنك التفاعل مع الوحدة في مرحلتها الحالية (${unit.stage})`, 'info');
+            }
+        }
+
+        function openUnitDetails(unit) {
+            document.getElementById('detailUnitNumber').textContent = unit.number;
+            document.getElementById('detailUnitType').textContent = unit.type;
+            document.getElementById('detailUnitArea').textContent = unit.area;
+            document.getElementById('detailUnitPrice').textContent = formatCurrency(unit.price);
+            document.getElementById('detailPricePerMeter').textContent = formatCurrency(unit.pricePerMeter) + '/متر²';
+            
+            const stageLabels = {
+                'available': 'متاحة',
+                'sales': 'في مرحلة المبيعات',
+                'finance': 'في القسم المالي',
+                'legal': 'في القسم القانوني',
+                'sold': 'مباعة'
+            };
+            document.getElementById('detailUnitStatus').textContent = stageLabels[unit.stage];
+            
+            document.getElementById('unitDetailsModal').style.display = 'flex';
+        }
+
+        // === MULTI-STAGE LOCKING SYSTEM ===
+        function openLockModal(unit) {
+            document.getElementById('modalUnitNumber').textContent = unit.number;
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerPhone').value = '';
+            document.getElementById('lockModal').style.display = 'flex';
+            
+            document.getElementById('confirmLockBtn').onclick = () => confirmLock(unit);
+            document.getElementById('cancelLockBtn').onclick = () => {
+                document.getElementById('lockModal').style.display = 'none';
+            };
+        }
+
+        function confirmLock(unit) {
+            const customerName = document.getElementById('customerName').value.trim();
+            const customerPhone = document.getElementById('customerPhone').value.trim();
+            
+            if (!customerName || !customerPhone) {
+                showNotification('يرجى ملء جميع بيانات العميل', 'error');
+                return;
+            }
+            
+            // Lock the unit in sales stage
+            unit.status = 'locked';
+            unit.stage = 'sales';
+            unit.lockedBy = currentUser.id;
+            unit.lockedAt = new Date();
+            unit.lockedUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+            unit.customerName = customerName;
+            unit.customerPhone = customerPhone;
+            unit.currentDepartment = 'sales';
+            
+            // Track lock count
+            if (!unit.salesRepLocks[currentUser.id]) {
+                unit.salesRepLocks[currentUser.id] = 0;
+            }
+            unit.salesRepLocks[currentUser.id]++;
+            unit.lockCount++;
+            
+            document.getElementById('lockModal').style.display = 'none';
+            showNotification(`تم بدء عملية بيع الوحدة ${unit.number} للعميل ${customerName}`, 'success');
+            
+            renderUnits();
+            
+            // Schedule interest check
+            setTimeout(() => {
+                if (unit.stage === 'sales' && unit.lockedBy === currentUser.id) {
+                    openSalesExtensionModal(unit);
+                }
+            }, 5 * 60 * 1000); // 5 minutes
+        }
+
+        function openSalesExtensionModal(unit) {
+            const timeRemaining = Math.max(0, Math.ceil((unit.lockedUntil - Date.now()) / 60000));
+            
+            document.getElementById('salesExtensionUnitNumber').textContent = unit.number;
+            document.getElementById('salesTimeRemaining').textContent = timeRemaining;
+            document.getElementById('salesExtensionModal').style.display = 'flex';
+            
+            document.getElementById('moveToFinanceBtn').onclick = () => moveToFinance(unit);
+            document.getElementById('extendSalesBtn').onclick = () => extendSalesLock(unit, 5);
+            document.getElementById('releaseSalesUnitBtn').onclick = () => releaseUnit(unit);
+        }
+
+        function extendSalesLock(unit, minutes) {
+            unit.lockedUntil = new Date(Date.now() + minutes * 60 * 1000);
+            document.getElementById('salesExtensionModal').style.display = 'none';
+            showNotification(`تم تمديد مرحلة المبيعات ${minutes} دقيقة`, 'warning');
+            
+            renderUnits();
+            
+            // Schedule next interest check
+            setTimeout(() => {
+                if (unit.stage === 'sales' && unit.lockedBy === currentUser.id) {
+                    openSalesExtensionModal(unit);
+                }
+            }, 5 * 60 * 1000);
+        }
+
+        function moveToFinance(unit) {
+            unit.stage = 'finance';
+            unit.lockedUntil = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+            unit.currentDepartment = 'finance';
+            document.getElementById('salesExtensionModal').style.display = 'none';
+            showNotification(`تم تحويل الوحدة ${unit.number} إلى القسم المالي`, 'finance');
+            
+            renderUnits();
+        }
+
+        function openFinanceModal(unit) {
+            const timeRemaining = Math.max(0, Math.ceil((unit.lockedUntil - Date.now()) / 60000));
+            
+            document.getElementById('financeUnitNumber').textContent = unit.number;
+            document.getElementById('financeTimeRemaining').textContent = timeRemaining;
+            document.getElementById('financeCustomerName').textContent = unit.customerName;
+            document.getElementById('financeCustomerPhone').textContent = unit.customerPhone;
+            document.getElementById('financeModal').style.display = 'flex';
+            
+            document.getElementById('moveToLegalBtn').onclick = () => moveToLegal(unit);
+            document.getElementById('extendFinanceBtn').onclick = () => extendFinanceLock(unit, 10);
+            document.getElementById('rejectFinanceBtn').onclick = () => rejectFromFinance(unit);
+        }
+
+        function extendFinanceLock(unit, minutes) {
+            unit.lockedUntil = new Date(Date.now() + minutes * 60 * 1000);
+            document.getElementById('financeModal').style.display = 'none';
+            showNotification(`تم تمديد المرحلة المالية ${minutes} دقيقة`, 'finance');
+            
+            renderUnits();
+        }
+
+        function rejectFromFinance(unit) {
+            unit.stage = 'available';
+            unit.status = 'available';
+            unit.lockedBy = null;
+            unit.lockedAt = null;
+            unit.lockedUntil = null;
+            unit.currentDepartment = null;
+            document.getElementById('financeModal').style.display = 'none';
+            showNotification(`تم رفض الوحدة ${unit.number} من القسم المالي وإعادتها للمرحلة المتاحة`, 'warning');
+            
+            renderUnits();
+        }
+
+        function moveToLegal(unit) {
+            unit.stage = 'legal';
+            unit.lockedUntil = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+            unit.currentDepartment = 'legal';
+            document.getElementById('financeModal').style.display = 'none';
+            showNotification(`تم تحويل الوحدة ${unit.number} إلى القسم القانوني`, 'legal');
+            
+            renderUnits();
+        }
+
+        function openLegalModal(unit) {
+            const timeRemaining = Math.max(0, Math.ceil((unit.lockedUntil - Date.now()) / 60000));
+            
+            document.getElementById('legalUnitNumber').textContent = unit.number;
+            document.getElementById('legalTimeRemaining').textContent = timeRemaining;
+            document.getElementById('legalCustomerName').textContent = unit.customerName;
+            document.getElementById('legalCustomerPhone').textContent = unit.customerPhone;
+            document.getElementById('legalModal').style.display = 'flex';
+            
+            document.getElementById('markAsSoldBtn').onclick = () => markAsSold(unit);
+            document.getElementById('extendLegalBtn').onclick = () => extendLegalLock(unit, 10);
+            document.getElementById('rejectLegalBtn').onclick = () => rejectFromLegal(unit);
+        }
+
+        function extendLegalLock(unit, minutes) {
+            unit.lockedUntil = new Date(Date.now() + minutes * 60 * 1000);
+            document.getElementById('legalModal').style.display = 'none';
+            showNotification(`تم تمديد المرحلة القانونية ${minutes} دقيقة`, 'legal');
+            
+            renderUnits();
+        }
+
+        function rejectFromLegal(unit) {
+            unit.stage = 'available';
+            unit.status = 'available';
+            unit.lockedBy = null;
+            unit.lockedAt = null;
+            unit.lockedUntil = null;
+            unit.currentDepartment = null;
+            document.getElementById('legalModal').style.display = 'none';
+            showNotification(`تم رفض الوحدة ${unit.number} من القسم القانوني وإعادتها للمرحلة المتاحة`, 'warning');
+            
+            renderUnits();
+        }
+
+        function markAsSold(unit) {
+            unit.stage = 'sold';
+            unit.status = 'sold';
+            unit.lockedBy = null;
+            unit.lockedAt = null;
+            unit.lockedUntil = null;
+            unit.currentDepartment = null;
+            document.getElementById('legalModal').style.display = 'none';
+            showNotification(`تم بيع الوحدة ${unit.number} بنجاح للعميل ${unit.customerName}`, 'success');
+            
+            // Send notification to CEO and Manager
+            if (['manager', 'ceo'].includes(currentUser.role)) {
+                showNotification(`تم تحديث الشاشة الرقمية تلقائياً ببيع الوحدة ${unit.number}`, 'info');
+            }
+            
+            renderUnits();
+        }
+
+        function releaseUnit(unit) {
+            unit.stage = 'available';
+            unit.status = 'available';
+            unit.lockedBy = null;
+            unit.lockedAt = null;
+            unit.lockedUntil = null;
+            unit.currentDepartment = null;
+            document.getElementById('salesExtensionModal').style.display = 'none';
+            showNotification(`تم تحرير الوحدة ${unit.number}`);
+            
+            renderUnits();
+        }
+
+        function startTimer(unit) {
+            if (timers[unit.id]) {
+                clearInterval(timers[unit.id]);
+            }
+            
+            timers[unit.id] = setInterval(() => {
+                const now = new Date();
+                const timeLeft = unit.lockedUntil - now;
+                
+                if (timeLeft <= 0) {
+                    // Auto-progress when time expires
+                    if (unit.stage === 'sales') {
+                        unit.stage = 'available';
+                        unit.status = 'available';
+                        unit.lockedBy = null;
+                        unit.lockedAt = null;
+                        unit.lockedUntil = null;
+                        unit.currentDepartment = null;
+                        showNotification(`انتهت مدة حجز الوحدة ${unit.number} في مرحلة المبيعات`, 'warning');
+                    } else if (unit.stage === 'finance') {
+                        moveToLegal(unit);
+                    } else if (unit.stage === 'legal') {
+                        markAsSold(unit);
+                    }
+                    
+                    clearInterval(timers[unit.id]);
+                    renderUnits();
+                    return;
+                }
+                
+                const minutes = Math.floor(timeLeft / 60000);
+                const seconds = Math.floor((timeLeft % 60000) / 1000);
+                
+                const timerElement = document.getElementById(`timer-${unit.id}`);
+                if (timerElement) {
+                    timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        // === ENHANCED MANAGER CONTROLS ===
+        function updateManagerControls() {
+            if (!['manager', 'ceo'].includes(currentUser?.role)) return;
+            
+            const forceUnlockSelect = document.getElementById('forceUnlockSelect');
+            const revertSoldSelect = document.getElementById('revertSoldSelect');
+            const changeStageSelect = document.getElementById('changeStageSelect');
+            
+            forceUnlockSelect.innerHTML = '<option value="">اختر وحدة مقفولة لفتحها...</option>';
+            revertSoldSelect.innerHTML = '<option value="">اختر وحدة مباعة للتراجع...</option>';
+            changeStageSelect.innerHTML = '<option value="">اختر وحدة لتغيير مرحلتها...</option>';
+            
+            projects[currentProject].units.forEach(unit => {
+                if (['sales', 'finance', 'legal'].includes(unit.stage)) {
+                    const option = document.createElement('option');
+                    option.value = unit.id;
+                    option.textContent = `${unit.number} (${unit.stage} - بواسطة: ${unit.lockedBy})`;
+                    forceUnlockSelect.appendChild(option);
+                }
+                
+                if (unit.stage === 'sold') {
+                    const option = document.createElement('option');
+                    option.value = unit.id;
+                    option.textContent = `${unit.number} (مباعة للعميل: ${unit.customerName})`;
+                    revertSoldSelect.appendChild(option);
+                }
+                
+                if (unit.stage !== 'sold') {
+                    const option = document.createElement('option');
+                    option.value = unit.id;
+                    option.textContent = `${unit.number} (${unit.stage})`;
+                    changeStageSelect.appendChild(option);
+                }
+            });
+            
+            // Show manager controls
+            document.getElementById('managerControls').style.display = 'block';
+        }
+
+        document.getElementById('forceUnlockBtn').addEventListener('click', () => {
+            const unitId = document.getElementById('forceUnlockSelect').value;
+            if (!unitId) {
+                showNotification('يرجى اختيار وحدة لفتح قفلها', 'error');
+                return;
+            }
+            
+            const unit = projects[currentProject].units.find(u => u.id === unitId);
+            if (unit) {
+                const previousLocker = unit.lockedBy;
+                const previousStage = unit.stage;
+                unit.stage = 'available';
+                unit.status = 'available';
+                unit.lockedBy = null;
+                unit.lockedAt = null;
+                unit.lockedUntil = null;
+                unit.currentDepartment = null;
+                showNotification(`تم فتح قفل الوحدة ${unit.number} قسرياً (كانت في ${previousStage} بواسطة ${previousLocker})`, 'warning');
+                renderUnits();
+            }
+        });
+
+        document.getElementById('revertSoldBtn').addEventListener('click', () => {
+            const unitId = document.getElementById('revertSoldSelect').value;
+            if (!unitId) {
+                showNotification('يرجى اختيار وحدة للتراجع عن بيعها', 'error');
+                return;
+            }
+            
+            const unit = projects[currentProject].units.find(u => u.id === unitId);
+            if (unit) {
+                unit.stage = 'available';
+                unit.status = 'available';
+                unit.lockedBy = null;
+                unit.lockedAt = null;
+                unit.lockedUntil = null;
+                unit.currentDepartment = null;
+                showNotification(`تم التراجع عن بيع الوحدة ${unit.number} وإعادتها للمرحلة المتاحة`, 'warning');
+                renderUnits();
+            }
+        });
+
+        document.getElementById('changeStageBtn').addEventListener('click', () => {
+            const unitId = document.getElementById('changeStageSelect').value;
+            const newStage = document.getElementById('newStageSelect').value;
+            
+            if (!unitId) {
+                showNotification('يرجى اختيار وحدة لتغيير مرحلتها', 'error');
+                return;
+            }
+            
+            const unit = projects[currentProject].units.find(u => u.id === unitId);
+            if (unit) {
+                const oldStage = unit.stage;
+                unit.stage = newStage;
+                
+                if (newStage === 'available') {
+                    unit.status = 'available';
+                    unit.lockedBy = null;
+                    unit.lockedAt = null;
+                    unit.lockedUntil = null;
+                    unit.currentDepartment = null;
+                } else if (newStage === 'sales') {
+                    unit.status = 'locked';
+                    unit.lockedUntil = new Date(Date.now() + 15 * 60 * 1000);
+                    unit.currentDepartment = 'sales';
+                } else if (newStage === 'finance') {
+                    unit.status = 'locked';
+                    unit.lockedUntil = new Date(Date.now() + 10 * 60 * 1000);
+                    unit.currentDepartment = 'finance';
+                } else if (newStage === 'legal') {
+                    unit.status = 'locked';
+                    unit.lockedUntil = new Date(Date.now() + 10 * 60 * 1000);
+                    unit.currentDepartment = 'legal';
+                } else if (newStage === 'sold') {
+                    unit.status = 'sold';
+                    unit.lockedBy = null;
+                    unit.lockedAt = null;
+                    unit.lockedUntil = null;
+                    unit.currentDepartment = null;
+                }
+                
+                showNotification(`تم تغيير مرحلة الوحدة ${unit.number} من ${oldStage} إلى ${newStage}`, 'info');
+                renderUnits();
+            }
+        });
+
+        // === CLIENT REGISTRATION ===
+        document.getElementById('clientRegistrationLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!['manager', 'ceo', 'sales1', 'sales2', 'sales3'].includes(currentUser?.role)) {
+                showNotification('يجب أن تكون مدير أو مندوب مبيعات لتسجيل عميل جديد', 'error');
+                return;
+            }
+            
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('digitalDisplay').style.display = 'none';
+            document.getElementById('clientRegistration').style.display = 'block';
+        });
+
+        document.getElementById('registerClientBtn').addEventListener('click', () => {
+            const clientName = document.getElementById('clientName').value.trim();
+            const clientPhone = document.getElementById('clientPhone').value.trim();
+            const clientEmail = document.getElementById('clientEmail').value.trim();
+            const clientSource = document.getElementById('clientSource').value;
+            const assignedSales = document.getElementById('assignedSales').value;
+            
+            if (!clientName || !clientPhone) {
+                showNotification('يرجى ملء اسم العميل ورقم الهاتف', 'error');
+                return;
+            }
+            
+            const newClient = {
+                id: `client-${Date.now()}`,
+                name: clientName,
+                phone: clientPhone,
+                email: clientEmail,
+                source: clientSource,
+                assignedTo: assignedSales || 'auto',
+                registeredBy: currentUser.id,
+                registrationDate: new Date(),
+                status: 'جديد'
+            };
+            
+            registeredClients.push(newClient);
+            
+            // Reset form
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientPhone').value = '';
+            document.getElementById('clientEmail').value = '';
+            document.getElementById('clientSource').value = '';
+            document.getElementById('assignedSales').value = '';
+            
+            showNotification(`تم تسجيل العميل ${clientName} بنجاح`, 'success');
+            
+            // Show notification to CEO and Manager
+            if (['manager', 'ceo'].includes(currentUser.role)) {
+                showNotification(`تم تسجيل عميل جديد: ${clientName}`, 'info');
+            }
+            
+            // Return to dashboard
+            document.getElementById('clientRegistration').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+        });
+
+        document.getElementById('cancelRegistrationBtn').addEventListener('click', () => {
+            document.getElementById('clientRegistration').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+        });
+
+        // === DIGITAL DISPLAY ===
+        document.getElementById('digitalDisplayLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('clientRegistration').style.display = 'none';
+            document.getElementById('digitalDisplay').style.display = 'block';
+            updateDigitalDisplay();
+        });
+
+        document.getElementById('backToDashboard').addEventListener('click', () => {
+            document.getElementById('digitalDisplay').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+        });
+
+        // === AUTHENTICATION ===
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const userRole = document.getElementById('userRole').value;
+            
+            if (!username || !password || !userRole) {
+                showNotification('يرجى ملء جميع الحقول', 'error');
+                return;
+            }
+            
+            // Set current user based on selection
+            if (userRole === 'client') {
+                currentUser = {
+                    id: 'client',
+                    name: username || 'عميل',
+                    role: 'client'
+                };
+            } else if (userRole.startsWith('sales')) {
+                currentUser = {
+                    id: userRole,
+                    name: username || userRole.toUpperCase(),
+                    role: 'sales'
+                };
+            } else if (userRole === 'manager') {
+                currentUser = {
+                    id: 'manager',
+                    name: username || 'مدير المبيعات',
+                    role: 'manager'
+                };
+            } else if (userRole === 'ceo') {
+                currentUser = {
+                    id: 'ceo', 
+                    name: username || 'المدير التنفيذي',
+                    role: 'ceo'
+                };
+            } else if (userRole === 'legal') {
+                currentUser = {
+                    id: 'legal',
+                    name: username || 'القسم القانوني',
+                    role: 'legal'
+                };
+            } else if (userRole === 'finance') {
+                currentUser = {
+                    id: 'finance',
+                    name: username || 'القسم المالي',
+                    role: 'finance'
+                };
+            }
+            
+            // Update UI
+            document.getElementById('currentUserName').textContent = currentUser.name;
+            document.getElementById('currentUserRole').textContent = 
+                currentUser.role === 'client' ? 'عميل' :
+                currentUser.role === 'sales' ? 'مندوب مبيعات' : 
+                currentUser.role === 'manager' ? 'مدير المبيعات' : 
+                currentUser.role === 'ceo' ? 'المدير التنفيذي' :
+                currentUser.role === 'legal' ? 'القسم القانوني' : 'القسم المالي';
+            
+            // Show application
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+            
+            if (currentUser.role === 'client') {
+                document.getElementById('projectsSection').style.display = 'block';
+                document.getElementById('dashboard').style.display = 'block';
+                showNotification(`مرحباً ${currentUser.name}! يمكنك تصفح الوحدات المتاحة`, 'success');
+            } else {
+                document.getElementById('dashboard').style.display = 'block';
+                document.getElementById('projectsSection').style.display = 'block';
+                showNotification(`مرحباً، ${currentUser.name}!`, 'success');
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            currentUser = null;
+            currentProject = null;
+            
+            // Clear any active timers
+            Object.values(timers).forEach(timer => clearInterval(timer));
+            timers = {};
+            
+            // Reset UI
+            document.getElementById('app').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('userRole').value = '';
+            
+            showNotification('تم تسجيل خروجك', 'info');
+        });
+
+        // === PROJECT NAVIGATION ===
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                currentProject = e.currentTarget.dataset.project;
+                const project = projects[currentProject];
+                
+                document.getElementById('projectTitle').textContent = project.name;
+                document.getElementById('projectDescription').textContent = project.description;
+                document.getElementById('projectsSection').style.display = 'none';
+                document.getElementById('unitsSection').style.display = 'block';
+                document.getElementById('stageIndicator').style.display = 'flex';
+                renderUnits();
+            });
+        });
+
+        document.getElementById('backToProjects').addEventListener('click', () => {
+            document.getElementById('unitsSection').style.display = 'none';
+            document.getElementById('projectsSection').style.display = 'block';
+            document.getElementById('stageIndicator').style.display = 'none';
+            currentProject = null;
+        });
+
+        // === CLOSE MODALS ===
+        document.getElementById('closeUnitDetails').addEventListener('click', () => {
+            document.getElementById('unitDetailsModal').style.display = 'none';
+        });
+
+        // Close modals when clicking outside
+        document.querySelectorAll('.modal, .unit-details-modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        // Initialize the application
+        updateStatistics();
+    </script>
+</body>
+</html>
